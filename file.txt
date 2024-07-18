@@ -1,0 +1,75 @@
+import boto3
+from uuid import uuid4
+def lambda_handler(event, context):
+ s3 = boto3.client("s3")
+ dynamodb = boto3.resource('dynamodb')
+ for record in event['Records']:
+ bucket_name = record['s3']['bucket']['name']
+ object_key = record['s3']['object']['key']
+ size = record['s3']['object'].get('size', -1)
+ event_name = record ['eventName']
+ event_time = record['eventTime']
+ dynamoTable = dynamodb.Table('newtable')
+ dynamoTable.put_item(
+ Item={'unique': str(uuid4()), 'Bucket': bucket_name, 'Object': object_key,'Size': size,
+'Event': event_name, 'EventTime': event_time})
+
+
+new code
+
+import boto3
+from uuid import uuid4
+
+def lambda_handler(event, context):
+    try:
+        s3 = boto3.client("s3")
+        dynamodb = boto3.resource('dynamodb')
+        dynamo_table = dynamodb.Table('newtable')
+        
+        for record in event['Records']:
+            bucket_name = record['s3']['bucket']['name']
+            object_key = record['s3']['object']['key']
+            size = record['s3']['object'].get('size', -1)
+            event_name = record['eventName']
+            event_time = record['eventTime']
+            
+            dynamo_table.put_item(
+                Item={
+                    'unique': str(uuid4()), 
+                    'Bucket': bucket_name, 
+                    'Object': object_key, 
+                    'Size': size, 
+                    'Event': event_name, 
+                    'EventTime': event_time
+                }
+            )
+    except Exception as e:
+        print(f"Error processing event: {e}")
+
+    return {
+        'statusCode': 200,
+        'body': 'Event processed successfully'
+    }
+
+
+Now, we build an image in docker using following command
+ sudo docker build -t myimage 
+
+Step 17: Now we should run the docker image using
+ sudo docker run -d -p 5100:80 myimage 
+
+
+Step 11: Install NGINX server using
+ sudo su
+ sudo yum install nginx. 
+ To change the Default Page of Nginx
+ Go to PowerShell and cd /usr/share/nginx/html.
+ Type command echo “Page under Construction” > index.html 
+
+
+install docker using “sudo apt-get install docker.io” 
+ pull nginx using “docker pull nginx”
+ run nginx container using ‘docker run -d -p 5000:80 --name nginx-conf nginx ’ 
+Step 13: To change the default page of nginx use the following command
+ sudo docker exec -it nginx-cont /bin/bash
+ echo “21BD1A052C – Sanjay Kumar” > /usr/share/nginx/html/index.html 
